@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Las 10 mejores Barras de Sonido en España{% endblock %}
+
+{% block body %}
+<h1>Las 10 mejores Barras de Sonido en España</h1>
+<p class="text-right">Declaración de divulgación publicitaria</p>
+<table class="table-header">
+     <thead>
+        <tr>
+            <th class="col-product">Producto</th>
+            <th class="col-rating">Puntuación</th>
+            <th colspan="2" class="col-features">Características Clave</th>
+        </tr>
+    </thead>
+</table>
+<table class="table-body">
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td class="col-product">
+            {% if product.BrowseNodeInfo.BrowseNodes[0].SalesRank == 1 %}
+            <div class="ribbon">#{{ loop.index }} Mejor Opción 2024</div>
+            {% elseif loop.index0 == cheapestProductId %}
+            <div class="ribbon">#{{ loop.index }} Mejor Precio 2024</div>
+            {% else %}
+            <div class="index-number">#{{ loop.index }}</div>
+            {% endif %}
+            <img src="{{ product.Images.Primary.Large.URL }}" alt="{{ product.ItemInfo.Title.DisplayValue }}"></td>
+            <td class="col-rating">
+                <p class="rating-number">9.9</p>
+                <p class="star-rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+                <a>"Excepcional"</a>
+            </td>
+            <td class="col-features">
+                <p class="p-title">{{ product.ItemInfo.Title.DisplayValue|slice(0, 65) ~ '...' }}</p>
+                <p class="p-brand">{{ product.ItemInfo.ByLineInfo.Brand.DisplayValue }}</p>
+                <ul class="options-list">
+                    {% if product.Offers.Listings[0].DeliveryInfo.IsFreeShippingEligible %}
+                    <li>Envio gratis</li>
+                    {% endif %}
+                    {% if product.Offers.Listings[0].Price.Savings.Percentage %}
+                    <li>Ahorro: {{ product.Offers.Listings[0].Price.Savings.Percentage }}%</li>
+                    {% endif %}
+                </ul>
+                <p><a href="javascript:void(0);" id="toggleDetail_{{ loop.index }}" onclick="toggleDetails({{ loop.index }})">Mostrar más <i class="fa-solid fa-chevron-down"></i></a></p>
+            </td>
+            <td class="col-buy">
+                <div class="buy-button">
+                    <a href="{{ product.DetailPageURL }}" class="btn-primary" target="_blank">Comprar Ahora <i class="fa-solid fa-chevron-right"></i></a>
+                    <img src="images/amazon.jpg" class="max-100">
+                </div>
+            </td>
+        </tr>
+        <tr class="details" id="detail_{{ loop.index }}">
+            <td colspan="5">
+                <ul>
+                    {% for feature in product.ItemInfo.Features.DisplayValues %}
+                        <li>{{ feature }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    window.toggleDetails = function(index) {
+        var detailsRow = document.getElementById('detail_' + index);
+        var toggleButton = document.getElementById('toggleDetail_' + index);
+        if (detailsRow.classList.contains('expanded')) {
+            detailsRow.classList.remove('expanded');
+            toggleButton.innerHTML = 'Mostrar menos <i class="fa-solid fa-chevron-up"></i>';
+        } else {
+            detailsRow.classList.add('expanded');
+            toggleButton.innerHTML = 'Mostrar más <i class="fa-solid fa-chevron-down"></i>';
+        }
+    }
+});
+</script>
+{% endblock %}
